@@ -8,7 +8,7 @@ setup(
     long_description_content_type='text/markdown',
     author='Louis the Sigma',
     author_email='sigma@slayverse.com',
-    url='https://github.com/yourusername/genalpha-lang',
+    url='https://github.com/PotatoInfinity/genalpha-lang',
     packages=find_packages(),
     classifiers=[
         'Programming Language :: Python :: 3',
