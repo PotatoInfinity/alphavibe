@@ -100,8 +100,18 @@ FORBIDDEN = [
 ]
 REVERSE_TRANSLATION = {v: re.sub(r"\\b", "", k) for k, v in TRANSLATION.items()}
 def block_boomer_builtins():
-    for word in FORBIDDEN:
-        exec(f"def {word}(*args, **kwargs): raise SyntaxError('🚫 Gen Alpha only. No `{word}` allowed. Use the vibe.')", globals())
+    """🚫 No Boomer Python allowed."""
+    forbidden = [
+        "def", "if", "for", "while", "return", "print", "try", "except",
+        "class", "import", "input", "async", "await", "with", "raise",
+        "len", "exit", "break", "continue", "pass"
+    ]
+    for word in forbidden:
+        if word == "def":
+            # Special case for def to avoid invalid syntax error
+            exec(f"def {word}_boom(*args, **kwargs): raise SyntaxError('🚫 Gen Alpha only. No `{word}` allowed. Use the vibe.')", globals())
+        else:
+            exec(f"def {word}(*args, **kwargs): raise SyntaxError('🚫 Gen Alpha only. No `{word}` allowed. Use the vibe.')", globals())
 
 def alphaRun(code: str):
     """
