@@ -18,7 +18,7 @@ bringIn math
 
 vibe main():
     drip x in zoom range(5):
-        spitItOut("Slay", x)
+        spitItOut("Count:", x)
     bounce facts
 
 main()
@@ -30,11 +30,11 @@ alphaRun(code)
 > Output:
 
 ```
-Slay 0
-Slay 1
-Slay 2
-Slay 3
-Slay 4
+Count: 0
+Count: 1
+Count: 2
+Count: 3
+Count: 4
 ```
 
 ---
