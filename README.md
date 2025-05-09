@@ -11,7 +11,7 @@ Finally, a python library that passes the vibe check 💯.
 ## ✨ Example
 
 ```python
-from genalpha_lang import alphaRun
+from alphavibe import alphaRun
 
 code = '''
 bringIn math
@@ -86,7 +86,7 @@ Boomer-proofed for maximum drip 😤
 ## 📦 Installation
 
 ```bash
-pip install genalpha-lang
+pip install alphavibe
 ```
 
 ---
@@ -94,7 +94,7 @@ pip install genalpha-lang
 ## 🛠 How to Use
 
 ```python
-from genalpha_lang import alphaRun
+from alphavibe import alphaRun
 
 code = """
 vibe hello():
