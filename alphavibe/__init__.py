@@ -106,10 +106,18 @@ def block_boomer_builtins():
     ]
     def block_boomer_builtins():
     """🚫 No Boomer Python built-in functions allowed."""
-    blocked_funcs = ["print", "input", "len", "exit"]
-    for name in blocked_funcs:
-        setattr(builtins, name, lambda *args, **kwargs: (_ for _ in ()).throw(SyntaxError(
-            f"🚫 Gen Alpha only. No `{name}` allowed. Use the slang version instead.")))
+    forbidden = [
+        "def", "if", "for", "while", "return", "print", "try", "except",
+        "class", "import", "input", "async", "await", "with", "raise",
+        "len", "exit", "break", "continue", "pass"
+    ]
+    for word in forbidden:
+        if word == "def":
+            # Special case for def to avoid invalid syntax error
+            exec(f"def {word}_boom(*args, **kwargs): raise SyntaxError('🚫 Gen Alpha only. No `{word}` allowed. Use the vibe.')", globals())
+        else:
+            exec(f"def {word}(*args, **kwargs): raise SyntaxError('🚫 Gen Alpha only. No `{word}` allowed. Use the vibe.')", globals())
+
 def alphaRun(code: str):
     """
     Translates Gen Alpha code into Python, checks for forbidden syntax, then executes it.
