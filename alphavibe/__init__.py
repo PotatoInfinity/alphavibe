@@ -1,5 +1,6 @@
 import builtins
 import re
+
 # 🌈 Gen Alpha to Python Dictionary 
 TRANSLATION = {
     r"\bvibe\b": "def",
@@ -33,9 +34,9 @@ TRANSLATION = {
     r"\bbet\b": "break",
     r"\bsussy\b": "continue",
     r"\bsussOut\b": "pass",
-    r"\balpha\b": "def main",
-    r"\bbeta\b": "def __init__",
-    r"\bsigma\b": "def __str__",
+    r"\balpha\b": "main",
+    r"\bbeta\b": "__init__",
+    r"\bsigma\b": "__str__",
     r"\bglowUp\b": "global",
     r"\blowKey\b": "nonlocal",
     r"\bbigMood\b": "True",
@@ -91,48 +92,40 @@ TRANSLATION = {
     r"\bbigBetBet\b": "break",
     r"\bbigSussOut\b": "pass"
 }
+
 FORBIDDEN = [
     "def", "if", "for", "while", "return", "print", "try", "except",
     "class", "import", "input", "async", "await", "with", "raise",
     "len", "exit", "break", "continue", "pass"
 ]
-REVERSE_TRANSLATION = {v: re.sub(r"\\b", "", k).replace("\\", "") for k, v in TRANSLATION.items()}
-def block_boomer_builtins():
-    """\ud83d\udeab No Boomer Python allowed."""
-    forbidden = [
-        "def", "if", "for", "while", "return", "print", "try", "except",
-        "class", "import", "input", "async", "await", "with", "raise",
-        "len", "exit", "break", "continue", "pass"
-    ]
-    def block_boomer_builtins():
-    """🚫 No Boomer Python built-in functions allowed."""
-    forbidden = [
-        "def", "if", "for", "while", "return", "print", "try", "except",
-        "class", "import", "input", "async", "await", "with", "raise",
-        "len", "exit", "break", "continue", "pass"
-    ]
-    for word in forbidden:
-        if word == "def":
-            # Special case for def to avoid invalid syntax error
-            exec(f"def {word}_boom(*args, **kwargs): raise SyntaxError('🚫 Gen Alpha only. No `{word}` allowed. Use the vibe.')", globals())
-        else:
-            exec(f"def {word}(*args, **kwargs): raise SyntaxError('🚫 Gen Alpha only. No `{word}` allowed. Use the vibe.')", globals())
 
-def alphaRun(code: str):
+REVERSE_TRANSLATION = {v: re.sub(r"\\b", "", k).replace("\\", "") for k, v in TRANSLATION.items()}
+
+def block_boomer_builtins():
+    """🚫 No Boomer Python built-in functions allowed."""
+    for word in FORBIDDEN:
+        exec(f"def {word}(*args, **kwargs): raise SyntaxError('🚫 Gen Alpha only. No `{word}` allowed.')", globals())
+
+def alphaRun(code: str, execMode: str = "run"):
     """
     Translates Gen Alpha code into Python, checks for forbidden syntax, then executes it.
+    If execMode == "return", it returns the translated code instead.
     """
     lines = code.splitlines()
     for i, line in enumerate(lines, start=1):
         for word in FORBIDDEN:
-            if re.search(rf"\b{word}\b", line):
+            if re.search(rf"\\b{word}\\b", line):
                 suggestion = REVERSE_TRANSLATION.get(word, "🧓 [no Gen Alpha slang known]")
                 print(f"🚫 Boomer code at line {i}: `{word}` found.\n💡 Did you mean `{suggestion}` instead?\n")
 
+    # Sort longest match first so e.g. "bigDrip" replaces before "drip"
     for ga_pattern, py_keyword in sorted(TRANSLATION.items(), key=lambda x: -len(x[0])):
-    code = re.sub(ga_pattern, py_keyword, code)
+        code = re.sub(ga_pattern, py_keyword, code)
 
+    if execMode == "return":
+        return code
     exec(code, globals())
+
 builtins.spillTea = input
 builtins.spitItOut = print
 builtins.vibeCheck = len
