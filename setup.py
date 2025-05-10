@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='alphavibe',
-    version='1.5.1',
+    version='1.5.5,
     description='Gen Alpha programming language: Vibe-based Python for Zoomers',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
