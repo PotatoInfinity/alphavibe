@@ -1,5 +1,3 @@
-# alphavibe/__init__.py
-
 import builtins
 import re
 # 🌈 Gen Alpha to Python Dictionary 
@@ -98,21 +96,20 @@ FORBIDDEN = [
     "class", "import", "input", "async", "await", "with", "raise",
     "len", "exit", "break", "continue", "pass"
 ]
-REVERSE_TRANSLATION = {v: re.sub(r"\\b", "", k) for k, v in TRANSLATION.items()}
+REVERSE_TRANSLATION = {v: re.sub(r"\\b", "", k).replace("\\", "") for k, v in TRANSLATION.items()}
 def block_boomer_builtins():
-    """🚫 No Boomer Python allowed."""
+    """\ud83d\udeab No Boomer Python allowed."""
     forbidden = [
         "def", "if", "for", "while", "return", "print", "try", "except",
         "class", "import", "input", "async", "await", "with", "raise",
         "len", "exit", "break", "continue", "pass"
     ]
-    for word in forbidden:
-        if word == "def":
-            # Special case for def to avoid invalid syntax error
-            exec(f"def {word}_boom(*args, **kwargs): raise SyntaxError('🚫 Gen Alpha only. No `{word}` allowed. Use the vibe.')", globals())
-        else:
-            exec(f"def {word}(*args, **kwargs): raise SyntaxError('🚫 Gen Alpha only. No `{word}` allowed. Use the vibe.')", globals())
-
+    def block_boomer_builtins():
+    """🚫 No Boomer Python built-in functions allowed."""
+    blocked_funcs = ["print", "input", "len", "exit"]
+    for name in blocked_funcs:
+        setattr(builtins, name, lambda *args, **kwargs: (_ for _ in ()).throw(SyntaxError(
+            f"🚫 Gen Alpha only. No `{name}` allowed. Use the slang version instead.")))
 def alphaRun(code: str):
     """
     Translates Gen Alpha code into Python, checks for forbidden syntax, then executes it.
@@ -120,12 +117,12 @@ def alphaRun(code: str):
     lines = code.splitlines()
     for i, line in enumerate(lines, start=1):
         for word in FORBIDDEN:
-            if re.search(rf"\\b{word}\\b", line):
-                suggestion = REVERSE_TRANSLATION.get(word, "🧃 [no Gen Alpha slang known]")
+            if re.search(rf"\b{word}\b", line):
+                suggestion = REVERSE_TRANSLATION.get(word, "🧓 [no Gen Alpha slang known]")
                 print(f"🚫 Boomer code at line {i}: `{word}` found.\n💡 Did you mean `{suggestion}` instead?\n")
 
-    for ga_pattern, py_keyword in TRANSLATION.items():
-        code = re.sub(ga_pattern, py_keyword, code)
+    for ga_pattern, py_keyword in sorted(TRANSLATION.items(), key=lambda x: -len(x[0])):
+    code = re.sub(ga_pattern, py_keyword, code)
 
     exec(code, globals())
 builtins.spillTea = input
