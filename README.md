@@ -143,12 +143,7 @@ def hello():
     print("hi")
 ```
 
-You'll get roasted with:
-
-```
-🚫 Boomer code at line 1: def found.
-💡 Did you mean vibe instead?
-```
+You'll get roasted with a warning
 
 Boomer-proofed for maximum drip 😤
 
