@@ -1,7 +1,7 @@
 import builtins
 import re
 
-# 🌈 Gen Alpha to Python Dictionary 
+# 🌈 Gen Alpha to Python Dictionary
 TRANSLATION = {
     r"\bvibe\b": "def",
     r"\bsus\b": "if",
@@ -93,6 +93,7 @@ TRANSLATION = {
     r"\bbigSussOut\b": "pass"
 }
 
+# Keywords we can't redefine, but will detect/warn
 FORBIDDEN = [
     "def", "if", "for", "while", "return", "print", "try", "except",
     "class", "import", "input", "async", "await", "with", "raise",
@@ -102,9 +103,13 @@ FORBIDDEN = [
 REVERSE_TRANSLATION = {v: re.sub(r"\\b", "", k).replace("\\", "") for k, v in TRANSLATION.items()}
 
 def block_boomer_builtins():
-    """🚫 No Boomer Python built-in functions allowed."""
+    """\ud83d\udeab No Boomer Python built-in functions allowed — only those that are overrideable."""
     for word in FORBIDDEN:
-        exec(f"def {word}(*args, **kwargs): raise SyntaxError('🚫 Gen Alpha only. No `{word}` allowed.')", globals())
+        if word in dir(builtins):
+            setattr(
+                builtins, word,
+                lambda *args, **kwargs: (_ for _ in ()).throw(SyntaxError(f"🚫 Gen Alpha only. No `{word}` allowed."))
+            )
 
 def alphaRun(code: str, execMode: str = "run"):
     """
@@ -114,11 +119,10 @@ def alphaRun(code: str, execMode: str = "run"):
     lines = code.splitlines()
     for i, line in enumerate(lines, start=1):
         for word in FORBIDDEN:
-            if re.search(rf"\\b{word}\\b", line):
+            if re.search(rf"\b{word}\b", line):
                 suggestion = REVERSE_TRANSLATION.get(word, "🧓 [no Gen Alpha slang known]")
                 print(f"🚫 Boomer code at line {i}: `{word}` found.\n💡 Did you mean `{suggestion}` instead?\n")
 
-    # Sort longest match first so e.g. "bigDrip" replaces before "drip"
     for ga_pattern, py_keyword in sorted(TRANSLATION.items(), key=lambda x: -len(x[0])):
         code = re.sub(ga_pattern, py_keyword, code)
 
@@ -126,7 +130,10 @@ def alphaRun(code: str, execMode: str = "run"):
         return code
     exec(code, globals())
 
+# Gen Alpha builtins
 builtins.spillTea = input
 builtins.spitItOut = print
 builtins.vibeCheck = len
+
+# Apply the built-in overrides
 block_boomer_builtins()
